@@ -1,8 +1,8 @@
 package com.example.repairagencyServlet.controller;
 
-import com.example.repairagencyServlet.dao.AppUserDAO;
-import com.example.repairagencyServlet.model.AppUser;
 
+import com.example.repairagencyServlet.model.entity.AppUser;
+import com.example.repairagencyServlet.model.dao.impl.AppUserDAO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 
 @WebServlet(name = "registration", value = "/registration")
 public class AppUserServlet extends HttpServlet {

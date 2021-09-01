@@ -1,17 +1,12 @@
-package com.example.repairagencyServlet.dao;
+package com.example.repairagencyServlet.model.dao.impl;
 
-import com.example.repairagencyServlet.PasswordConfig;
-import com.example.repairagencyServlet.model.AppUser;
-import com.example.repairagencyServlet.model.Role;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.repairagencyServlet.controller.config.PasswordConfig;
+import com.example.repairagencyServlet.model.entity.AppUser;
 
-import javax.xml.registry.infomodel.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AppUserDAO {
 

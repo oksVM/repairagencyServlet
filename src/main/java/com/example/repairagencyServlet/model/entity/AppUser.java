@@ -1,4 +1,4 @@
-package com.example.repairagencyServlet.model;
+package com.example.repairagencyServlet.model.entity;
 
 
 import javax.persistence.*;
