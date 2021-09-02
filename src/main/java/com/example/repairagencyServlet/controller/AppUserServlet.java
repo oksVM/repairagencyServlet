@@ -2,7 +2,7 @@ package com.example.repairagencyServlet.controller;
 
 
 import com.example.repairagencyServlet.model.entity.AppUser;
-import com.example.repairagencyServlet.model.dao.impl.AppUserDAO;
+import com.example.repairagencyServlet.model.dao.impl.JDBCAppUserDao;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet(name = "registration", value = "/registration")
 public class AppUserServlet extends HttpServlet {
-private AppUserDAO appUserDAO=new AppUserDAO();
+private JDBCAppUserDao JDBCAppUserDao =new JDBCAppUserDao();
     public AppUserServlet() {
     }
 
@@ -37,9 +37,9 @@ private AppUserDAO appUserDAO=new AppUserDAO();
         appUser.setLastName(lastName);
         appUser.setEmail(email);
         appUser.setPassword(password);
-        appUserDAO.registerAppUser(appUser);
+        JDBCAppUserDao.registerAppUser(appUser);
 
-        appUserDAO.registerAppUser(appUser);
+        JDBCAppUserDao.registerAppUser(appUser);
         RequestDispatcher requestDispatcher=req.getRequestDispatcher("/WEB-INF/view/homepage.jsp");
         requestDispatcher.forward(req,resp);
 
