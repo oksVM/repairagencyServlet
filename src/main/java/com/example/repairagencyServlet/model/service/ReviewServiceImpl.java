@@ -1,46 +1,31 @@
 package com.example.repairagencyServlet.model.service;
 
-import com.example.repairagency.model.AppUser;
-import com.example.repairagency.model.Order;
-import com.example.repairagency.model.OrderStatus;
-import com.example.repairagency.model.Review;
-import com.example.repairagency.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
+import com.example.repairagencyServlet.model.dao.DaoFactory;
+import com.example.repairagencyServlet.model.entity.Order;
+import com.example.repairagencyServlet.model.entity.Review;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
-import javax.transaction.Transactional;
-
+/*
 @Service
 public class ReviewServiceImpl implements ReviewService{
+    private DaoFactory daoFactory = DaoFactory.getInstance();
+    OrderService orderService = new OrderServiceImpl();
 
-    private ReviewRepository reviewRepository;
-    private OrderService orderService;
-    private AppUserService appUserService;
-
-    @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository, OrderService orderService, AppUserService appUserService) {
-        this.reviewRepository = reviewRepository;
-        this.orderService = orderService;
-        this.appUserService = appUserService;
-    }
 
 
     @Override
-    public Page<Review> findAllReviewsByMasterId(Long id,int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
-        return reviewRepository.findAllByMasterId(id, pageable);
+    public List<Review> findAllReviewsByMasterId(Long id) {
+        return daoFactory.createReviewDao().findAllByMasterId();
     }
 
     @Override
-    @Transactional
     public Review leaveFeedback(String feedback, Long orderId) {
         Order order = orderService.findOrderById(orderId);
         Long masterId = order.getMaster().getId();
         AppUser updatedMaster = appUserService.findById(masterId);
-        Review review = reviewRepository.save(Review.builder()
+        Review review = daoFactory.createReviewDao().create().save(Review.builder()
                 .master(updatedMaster)
                 .reviewDescription(feedback)
                 .build());
@@ -50,3 +35,4 @@ public class ReviewServiceImpl implements ReviewService{
         return review;
     }
 }
+*/

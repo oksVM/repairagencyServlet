@@ -1,39 +1,25 @@
 package com.example.repairagencyServlet.model.service;
 
-import com.example.repairagency.dto.PriceDto;
-import com.example.repairagency.exception.NotEnoughMoneyException;
-import com.example.repairagency.model.AppUser;
-import com.example.repairagency.model.Order;
-import com.example.repairagency.model.OrderStatus;
-import com.example.repairagency.repository.AppUserRepository;
-import com.example.repairagency.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import com.example.repairagencyServlet.controller.dto.PriceDto;
+import com.example.repairagencyServlet.exception.NotEnoughMoneyException;
+import com.example.repairagencyServlet.model.dao.DaoFactory;
+import com.example.repairagencyServlet.model.entity.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+/*
 @Service
 public class OrderServiceImpl implements OrderService{
-
-    private OrderRepository orderRepository;
-    private AppUserService appUserService;
-    private AppUserRepository appUserRepository;
-
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, AppUserService appUserService, AppUserRepository appUserRepository) {
-        this.orderRepository = orderRepository;
-        this.appUserService = appUserService;
-        this.appUserRepository = appUserRepository;
-    }
+    private DaoFactory daoFactory = DaoFactory.getInstance();
 
 
+
+
+    @Override
     public Order save(Order order) {
         return orderRepository.save(Order.builder()
                 .orderName(order.getOrderName())
@@ -47,7 +33,7 @@ public class OrderServiceImpl implements OrderService{
 
 
     @Override
-    public Page<Order> findAllCurrentCustomerOrders(int pageNo, int pageSize) {
+    public List<Order> findAllCurrentCustomerOrders() {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize);
         return orderRepository
                 .findAllByCustomerId(((AppUser) appUserService
@@ -55,7 +41,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Page<Order> findAllOrdersPaginated(String keyWord, int pageNo, int pageSize, String sortField, String sortDirection) {
+    public List<Order> findAllOrders() {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())? Sort.by(sortField):
                 Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
@@ -72,7 +58,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
    @Override
-   @Transactional
    public Order setPrice(PriceDto price, Long id) {
        Order order = findOrderById(id);
        order.setPrice(price.getAmountOfMoney());
@@ -81,7 +66,6 @@ public class OrderServiceImpl implements OrderService{
    }
 
     @Override
-    @Transactional
     public Order payForOrder(Long id) throws NotEnoughMoneyException {
         Order order = findOrderById(id);
         AppUser currentAppUser = ((AppUser) appUserService
@@ -97,7 +81,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    @Transactional
     public Order setMaster(Long masterId, Long id) {
         Order order = findOrderById(id);
         AppUser master = appUserService.findById(masterId);
@@ -108,7 +91,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Page<Order> findAllCurrentMasterOrders(int pageNo, int pageSize) {
+    public List<Order> findAllCurrentMasterOrders() {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize);
         return orderRepository
                 .findAllByMasterId(((AppUser) appUserService
@@ -116,7 +99,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    @Transactional
     public Order takeInWork(Long id) {
         Order order = findOrderById(id);
         order.setOrderStatus(OrderStatus.IN_WORK);
@@ -125,7 +107,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    @Transactional
     public Order markAsDone(Long id) {
         Order order = findOrderById(id);
         order.setOrderStatus(OrderStatus.DONE);
@@ -133,3 +114,4 @@ public class OrderServiceImpl implements OrderService{
         return order;
     }
 }
+*/
