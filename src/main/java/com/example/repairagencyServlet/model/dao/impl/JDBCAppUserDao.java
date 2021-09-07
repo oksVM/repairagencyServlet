@@ -6,7 +6,6 @@ import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Role;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,14 +24,7 @@ public class JDBCAppUserDao implements AppUserDao {
     public int create(AppUser appUser){
         String INSERT_APPUSER_SQL="INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
         int result = 0;
-        System.out.println("aaaaa");
-        //try {
-            //Class.forName("org.postgresql.Driver");
-       // } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
-        //}
-        //try (Connection connection= DriverManager.getConnection("jdbc:postgresql://localhost:5432/agencydb",
-                //"admindb", "2021")){
+
             try(PreparedStatement preparedStatement=connection.prepareStatement(INSERT_APPUSER_SQL)) {
                 preparedStatement.setString(1, appUser.getEmail());
                 preparedStatement.setString(2, appUser.getFirstName());
@@ -45,10 +37,7 @@ public class JDBCAppUserDao implements AppUserDao {
             } catch (SQLException e){
 
             }
-        //} catch (SQLException sqlException){
-//sqlException.printStackTrace();
-        //}
-return result;}
+            return result;}
 
     @Override
     public List<AppUser> findAllByRole(Role role) {

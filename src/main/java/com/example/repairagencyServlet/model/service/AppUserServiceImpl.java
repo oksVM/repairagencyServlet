@@ -9,6 +9,7 @@ import com.example.repairagencyServlet.model.dao.AppUserDao;
 import com.example.repairagencyServlet.model.dao.DaoFactory;
 import com.example.repairagencyServlet.model.dao.impl.JDBCAppUserDao;
 import com.example.repairagencyServlet.model.entity.AppUser;
+import com.example.repairagencyServlet.model.entity.Role;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +19,6 @@ import java.util.List;
 public class AppUserServiceImpl implements AppUserService {
     private DaoFactory daoFactory = DaoFactory.getInstance();
 
-
-
     @Override
     public AppUser saveNewCustomer(AppUser appUser) throws UserAlreadyExistAuthenticationException {
         try (JDBCAppUserDao dao = (JDBCAppUserDao) daoFactory.createAppUserDao()) {
@@ -27,16 +26,8 @@ public class AppUserServiceImpl implements AppUserService {
         }
         /*        if (appUserRepository.findByEmail(appUserRegistrationDto.getEmail()).isPresent()) {
             throw new UserAlreadyExistAuthenticationException(appUserRegistrationDto.getEmail());
-        }
-
-       return appUserRepository.save(AppUser.builder()
-                .firstName(appUserRegistrationDto.getFirstName())
-                .lastName(appUserRegistrationDto.getLastName())
-                .email(appUserRegistrationDto.getEmail())
-                .password(passwordEncoder.encode(appUserRegistrationDto.getPassword()))
-                .role(Role.CUSTOMER)
-                .build());*/
-        return null;
+        }*/
+        return appUser;
     }
 
     @Override
