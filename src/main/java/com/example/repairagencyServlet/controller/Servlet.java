@@ -2,7 +2,9 @@ package com.example.repairagencyServlet.controller;
 
 
 import com.example.repairagencyServlet.controller.command.Command;
-import com.example.repairagencyServlet.controller.command.admin.MasterRegistrationCommand;
+import com.example.repairagencyServlet.controller.command.LogOutCommand;
+import com.example.repairagencyServlet.controller.command.LoginCommand;
+import com.example.repairagencyServlet.controller.command.admin.*;
 import com.example.repairagencyServlet.controller.command.customer.CustomerRegistrationCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,19 +34,18 @@ public class Servlet extends HttpServlet {
 
         commands.put("/repairagencyServlet/registration", new CustomerRegistrationCommand());
         commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
-/*        commands.put("/main",
-                new MainCommand());
-        commands.put("/registration",
-                new RegistrationCommand());
-        commands.put("/logout",
-                new LogOutCommand());
-        commands.put("/login",
-                new LoginCommand());
-        commands.put("/exception",
-                new ExceptionCommand());*/
+        commands.put("/repairagencyServlet/admin/masters", new GetAllMastersCommand());
+        commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
+        commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
+        commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
+        commands.put("/repairagencyServlet/admin/orders", new GetAllOrderCommand());
+        commands.put("/repairagencyServlet/admin/order", new SetPriceForOrder());
+        commands.put("/logout", new LogOutCommand());
+        commands.put("/login", new LoginCommand());
+        commands.put("/exception", new ExceptionCommand());
 
 
-        logger.info("Mapping configured");
+        logger.info("Mapping completed");
     }
 
     public void doGet(HttpServletRequest request,
@@ -61,13 +62,9 @@ public class Servlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        //TODO
-        System.out.println("path: " + path);
         Command command = commands.getOrDefault(path,
-                (r) -> "/index.jsp");
-        //TODO
+                (r) -> "/WEB-INF/view/homepage.jsp");
         String page = command.execute(request);
-        System.out.println("page: " + page);
         if (page.contains("redirect:")) {
             response.sendRedirect(page.replace("redirect:", ""));
         } else {
