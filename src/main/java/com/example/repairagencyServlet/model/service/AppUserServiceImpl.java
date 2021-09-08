@@ -46,19 +46,14 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser saveNewMaster(AppUserRegistrationDto appUserRegistrationDto) throws UserAlreadyExistAuthenticationException {
-/*        if (appUserRepository.findByEmail(appUserRegistrationDto.getEmail()).isPresent()) {
-            throw new UserAlreadyExistAuthenticationException(appUserRegistrationDto.getEmail());
+    public AppUser saveNewMaster(AppUser appUser) throws UserAlreadyExistAuthenticationException {
+        try (JDBCAppUserDao dao = (JDBCAppUserDao) daoFactory.createAppUserDao()) {
+            dao.createMaster(appUser);
         }
-
-        return appUserRepository.save(AppUser.builder()
-                .firstName(appUserRegistrationDto.getFirstName())
-                .lastName(appUserRegistrationDto.getLastName())
-                .email(appUserRegistrationDto.getEmail())
-                .password(passwordEncoder.encode(appUserRegistrationDto.getPassword()))
-                .role(Role.MASTER)
-                .build());*/
-    return null;
+        /*        if (appUserRepository.findByEmail(appUserRegistrationDto.getEmail()).isPresent()) {
+            throw new UserAlreadyExistAuthenticationException(appUserRegistrationDto.getEmail());
+        }*/
+        return appUser;
     }
 
     @Override

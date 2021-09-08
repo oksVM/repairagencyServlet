@@ -52,7 +52,7 @@ public class CustomerRegistrationCommand implements Command {
         try {
             appUserService.saveNewCustomer(appUser);
         }catch (RuntimeException | UserAlreadyExistAuthenticationException e){
-            return "redirect:/registration?error=true";
+            return "redirect:/repairagencyServlet/registration?error=true";
         }
         return "redirect:/repairagencyServlet/registration";
     }

@@ -2,6 +2,7 @@ package com.example.repairagencyServlet.controller;
 
 
 import com.example.repairagencyServlet.controller.command.Command;
+import com.example.repairagencyServlet.controller.command.admin.MasterRegistrationCommand;
 import com.example.repairagencyServlet.controller.command.customer.CustomerRegistrationCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,7 @@ public class Servlet extends HttpServlet {
                         new HashSet<String>());
 
         commands.put("/repairagencyServlet/registration", new CustomerRegistrationCommand());
+        commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
 /*        commands.put("/main",
                 new MainCommand());
         commands.put("/registration",
