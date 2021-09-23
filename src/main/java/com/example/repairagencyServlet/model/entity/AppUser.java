@@ -30,7 +30,10 @@ import java.util.Set;
       this.role = role;
    }
 
-    public Long getId() {
+     public AppUser(Long i, Role unknown) {
+     }
+
+     public Long getId() {
        return id;
     }
 

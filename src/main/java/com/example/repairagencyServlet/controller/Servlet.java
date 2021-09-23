@@ -35,14 +35,14 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/registration", new CustomerRegistrationCommand());
         commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
         commands.put("/repairagencyServlet/admin/masters", new GetAllMastersCommand());
-        commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
-        commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
-        commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
+        //commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
+        //commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
+        //commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
         commands.put("/repairagencyServlet/admin/orders", new GetAllOrderCommand());
         commands.put("/repairagencyServlet/admin/order", new SetPriceForOrder());
-        commands.put("/logout", new LogOutCommand());
-        commands.put("/login", new LoginCommand());
-        commands.put("/exception", new ExceptionCommand());
+        commands.put("/repairagencyServlet/logout", new LogOutCommand());
+        commands.put("/repairagencyServlet/login", new LoginCommand());
+        commands.put("/repairagencyServlet/exception", new ExceptionCommand());
 
 
         logger.info("Mapping completed");

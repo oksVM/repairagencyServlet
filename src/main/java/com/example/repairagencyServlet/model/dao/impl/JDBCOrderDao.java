@@ -60,7 +60,7 @@ public class JDBCOrderDao implements OrderDao {
             while (rs.next()) {
                 Order order = new Order();
                 order.setId(rs.getLong("id"));
-               order.setArea(Area.valueOf(rs.getString("area")));
+                order.setArea(Area.valueOf(rs.getString("area")));
                 order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
                 order.setOrderName(rs.getString("order_name"));
                 order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));

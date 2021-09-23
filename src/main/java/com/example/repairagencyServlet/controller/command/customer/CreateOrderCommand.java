@@ -1,6 +1,11 @@
 package com.example.repairagencyServlet.controller.command.customer;
 
-import com.example.repairagencyServlet.model.entity.Order;
+import com.example.repairagencyServlet.controller.command.Command;
+import javax.servlet.http.HttpServletRequest;
 
-public class CreateOrderCommand extends Order {
+public class CreateOrderCommand implements Command {
+    @Override
+    public String execute(HttpServletRequest request) {
+        return null;
+    }
 }

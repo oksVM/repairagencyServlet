@@ -1,3 +1,4 @@
+/*
 package com.example.repairagencyServlet.controller.command.admin;
 
 import com.example.repairagencyServlet.controller.command.Command;
@@ -10,3 +11,4 @@ public class GetMasterReviews implements Command {
         return null;
     }
 }
+*/

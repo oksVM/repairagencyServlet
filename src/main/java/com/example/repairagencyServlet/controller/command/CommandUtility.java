@@ -13,6 +13,7 @@ public class CommandUtility {
         ServletContext context = request.getServletContext();
         context.setAttribute("user", user.getEmail());
         session.setAttribute("user", user);
+        session.setAttribute("role", user.getRole().toString());
     }
 
     public static AppUser getCurrentUser(HttpServletRequest request) {
