@@ -41,13 +41,12 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/login", new LoginCommand());
         commands.put("/repairagencyServlet/exception", new ExceptionCommand());
 
-
         commands.put("/repairagencyServlet/admin", new AdminHomePage());
         commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
         commands.put("/repairagencyServlet/admin/masters", new GetAllMastersCommand());
-        //commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
-        //commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
-        //commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
+        commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
+        commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
+        commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
         commands.put("/repairagencyServlet/admin/orders", new GetAllOrderCommand());
         commands.put("/repairagencyServlet/admin/order", new GetOneOrder());
         commands.put("/repairagencyServlet/admin/order/price", new GetOneOrder());
@@ -65,7 +64,7 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/orders", new GetAllCurrentMasterOrdersCommand());
         commands.put("/repairagencyServlet/order", new MasterHomePage());
         commands.put("/repairagencyServlet/order/in_work", new TakeOrderInWorkCommand());
-        commands.put("/repairagencyServlet/order/done", new MarkOrderAsDone();
+        commands.put("/repairagencyServlet/order/done", new MarkOrderAsDone());
 
         logger.info("Mapping completed");
     }

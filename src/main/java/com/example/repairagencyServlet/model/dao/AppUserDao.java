@@ -10,5 +10,5 @@ public interface AppUserDao extends GenericDAO{
     List<AppUser> findAllMasters();
     List<AppUser> findAllCustomers();
     Optional<AppUser> findById(Long id);
-    Optional <AppUser> findByEmail(String email);
+    AppUser findByEmail(String email);
 }

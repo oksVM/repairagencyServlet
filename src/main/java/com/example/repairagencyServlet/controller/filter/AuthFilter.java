@@ -1,12 +1,14 @@
 package com.example.repairagencyServlet.controller.filter;
 
+import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Role;
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
+@WebFilter(value = "/*")
 public class AuthFilter implements Filter {
 
     @Override
@@ -21,19 +23,17 @@ public class AuthFilter implements Filter {
 
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpServletResponse res = (HttpServletResponse) response;
-
         HttpSession session = req.getSession();
         ServletContext context = request.getServletContext();
-        Role role = (Role) session.getAttribute("role");
-        if (role == null) {
-            session.setAttribute("role", Role.UNKNOWN);
-            role = (Role) session.getAttribute("role");
+        AppUser appUser = (AppUser) session.getAttribute("user");
+        if (appUser == null) {
+            appUser = new AppUser();
+            appUser.setRole(Role.UNKNOWN);
+            session.setAttribute("user", appUser);
         }
 
-
         String requestURI = req.getRequestURI();
-
-        if (!isPermitted(role, requestURI)) {
+        if (!isPermitted(appUser.getRole(), requestURI)) {
             req.getRequestDispatcher("/WEB_INF/view/homepage.jsp").forward(req, res);
             return;
         }
@@ -45,19 +45,19 @@ public class AuthFilter implements Filter {
         boolean permitted = false;
         switch (role) {
             case ADMIN:
-                permitted = path.matches("(/admin.*)|(/logout)");
+                permitted = path.matches("(/repairagencyServlet/admin.*)|(/repairagencyServlet/logout)");
                 break;
             case CUSTOMER:
-                permitted = path.matches("(/customer.*)|(/logout)");
+                permitted = path.matches("(/repairagencyServlet/customer.*)|(/repairagencyServlet/logout)");
                 break;
             case MASTER:
-                permitted = path.matches("(/master.*)|(/logout)");
+                permitted = path.matches("(/repairagencyServlet/master.*)|(/repairagencyServlet/logout)");
                 break;
             case UNKNOWN:
-                permitted = path.matches("(/login)|(/registration)|(/logout)");
+                permitted = path.matches("(/repairagencyServlet/login)|(/repairagencyServlet/registration)|(/repairagencyServlet/logout)");
                 break;
         }
-        return permitted | path.matches("(/)|(/main)");
+        return permitted | path.matches("(/repairagencyServlet/home)|(/repairagencyServlet/first-servlet)");
     }
 
     @Override

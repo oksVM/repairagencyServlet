@@ -23,7 +23,7 @@ public class CustomerRegistrationCommand implements Command {
                 email == null || email.equals("") ||
                 password == null || password.equals("")
         ) {
-            return "/registration.jsp";
+            return "/WEB-INF/registration.jsp";
         }
 
         boolean haveErrors = false;
@@ -33,7 +33,7 @@ public class CustomerRegistrationCommand implements Command {
             haveErrors = true;
         }
 
-        if(!password.matches("^.{8,16}$")){
+        if(!password.matches("^.{4,16}$")){
             req.setAttribute("passwordIncorrect",true);
             haveErrors = true;
         }
@@ -42,7 +42,7 @@ public class CustomerRegistrationCommand implements Command {
             req.setAttribute("firstName",firstName);
             req.setAttribute("lastName",lastName);
             req.setAttribute("email",email);
-            return "/registration.jsp";
+            return "/WEB-INF/registration.jsp";
         }
         AppUser appUser = new AppUser();
         appUser.setFirstName(firstName);

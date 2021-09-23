@@ -1,17 +1,15 @@
 package com.example.repairagencyServlet.controller.command;
 
+import com.example.repairagencyServlet.controller.config.PasswordConfig;
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.service.AppUserService;
+import com.example.repairagencyServlet.model.service.AppUserServiceImpl;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class LoginCommand implements Command{
-    private AppUserService userService;
-
-    public LoginCommand(AppUserService userService) {
-        this.userService = userService;
-    }
+    private AppUserService userService = new AppUserServiceImpl();
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -19,37 +17,39 @@ public class LoginCommand implements Command{
             request.setAttribute("error", request.getParameter("error")!=null);
             request.setAttribute("logout", request.getParameter("logout")!=null);
             request.setAttribute("registered", request.getParameter("registered")!=null);
-            return("/WEB-INF/account/login.jsp");
+            return("/WEB-INF/login.jsp");
         }
 
-        String login = request.getParameter("username");
+        String username = request.getParameter("username");
 
-        if(CommandUtility.checkUserIsLogged(request, login)){
+        if(CommandUtility.checkUserIsLogged(request, username)){
             return "/noAccess.jsp";
         }
 
+        PasswordConfig passwordConfig = new PasswordConfig();
+        String password = passwordConfig.passwordEncoder().encode(request.getParameter("password"));
         AppUser user;
         try {
-            user = userService.loadUserByUsername(login);
-            if (!request.getParameter("password").equals(user.getPassword())) {
+            user = userService.loadUserByEmail(username);
+            if (user==null) {
                 throw new UsernameNotFoundException("user not found");
             }
         }
         catch (UsernameNotFoundException ex){
-            return("redirect:profile/login?error");
+            return("redirect:/repairagencyServlet/login?error");
         }
 
         CommandUtility.setUserSession(request, user);
 
         switch (user.getRole()) {
             case ADMIN:
-                return "redirect:admin-panel";
+                return "redirect:/repairagencyServlet/admin";
             case CUSTOMER:
-                return "redirect:profile";
+                return "redirect:/repairagencyServlet/customer";
             case MASTER:
-                return "redirect:"
+                return "redirect:/repairagencyServlet/master";
             default:
-                return("/WEB-INF/account/login.jsp");
+                return("/WEB-INF/login.jsp");
         }
 
     }

@@ -1,10 +1,13 @@
 package com.example.repairagencyServlet.controller.filter;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@WebFilter(value = "/*")
 public class LocaleFilter implements Filter {
+
     @Override
     public void init(FilterConfig arg0) {
     }

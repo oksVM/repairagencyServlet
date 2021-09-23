@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 public class CustomerHomePage implements Command {
     @Override
     public String execute(HttpServletRequest request) {
-        return null;
+        return "/WEB-INF/customer/customer_homepage.jsp";
     }
 }

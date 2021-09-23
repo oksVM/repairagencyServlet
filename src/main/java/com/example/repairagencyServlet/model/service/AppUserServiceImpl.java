@@ -1,18 +1,12 @@
 package com.example.repairagencyServlet.model.service;
 
-
-
-import com.example.repairagencyServlet.controller.dto.AppUserRegistrationDto;
 import com.example.repairagencyServlet.controller.dto.DepositDTO;
 import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationException;
 import com.example.repairagencyServlet.model.dao.AppUserDao;
 import com.example.repairagencyServlet.model.dao.DaoFactory;
 import com.example.repairagencyServlet.model.dao.impl.JDBCAppUserDao;
 import com.example.repairagencyServlet.model.entity.AppUser;
-import com.example.repairagencyServlet.model.entity.Role;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 
@@ -71,9 +65,10 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return null;
-       //return appUserRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
+    public AppUser loadUserByEmail(String email) throws UsernameNotFoundException {
+        try (AppUserDao dao = daoFactory.createAppUserDao()){
+            return dao.findByEmail(email);
+        }
     }
 }
 

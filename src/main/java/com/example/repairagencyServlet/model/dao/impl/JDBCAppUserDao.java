@@ -107,8 +107,34 @@ public class JDBCAppUserDao implements AppUserDao {
     }
 
     @Override
-    public Optional<AppUser> findByEmail(String email) {
-        return Optional.empty();
+    public AppUser findByEmail(String email) {
+
+        try (PreparedStatement ps = connection.prepareStatement("select * from app_user where email = ?")) {
+
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            AppUser user = null;
+            while (rs.next()) {
+                user = new AppUser();
+                user.setId(rs.getLong("app_user_id"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword("password");
+                user.setRole(Role.valueOf(rs.getString("role")));
+            }
+
+            if (user == null) {
+                return null;
+            }
+
+            if (user.getEmail().equals(email)) {
+                return user;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

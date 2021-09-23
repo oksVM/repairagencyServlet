@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AdminHomePage implements Command {
     @Override
     public String execute(HttpServletRequest request) {
-        return null;
+        return "/WEB-INF/admin/admin_homepage.jsp";
     }
 }

@@ -11,7 +11,10 @@ public class LogOutCommand implements Command {
         request.getServletContext().removeAttribute("user");
         CommandUtility.removeUserSession(request.getServletContext(),
                 ((AppUser) request.getSession().getAttribute("user")).getEmail());
-        CommandUtility.setUserSession(request, new AppUser(0L, Role.UNKNOWN));
+        AppUser appUser = new AppUser();
+        appUser.setId(0L);
+        appUser.setRole(Role.UNKNOWN);
+        CommandUtility.setUserSession(request, appUser);
         return "redirect:/repairagencyServlet/login?logout";
     }
 }
