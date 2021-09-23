@@ -1,10 +1,13 @@
 package com.example.repairagencyServlet.model.dao.impl;
 
+import com.example.repairagencyServlet.controller.command.CommandUtility;
+import com.example.repairagencyServlet.controller.config.PasswordConfig;
 import com.example.repairagencyServlet.model.dao.OrderDao;
 import com.example.repairagencyServlet.model.entity.Area;
 import com.example.repairagencyServlet.model.entity.Order;
 import com.example.repairagencyServlet.model.entity.OrderStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -56,6 +59,7 @@ public class JDBCOrderDao implements OrderDao {
         try (PreparedStatement ps = connection.prepareStatement(
                 "select o.id, o.area, o.offset_data_time, o.order_name, o.order_status, o.price, u.email " +
                         "from orders o left join app_user u on u.app_user_id=master_id;")) {
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Order order = new Order();
@@ -83,5 +87,24 @@ public class JDBCOrderDao implements OrderDao {
     @Override
     public List<Order> findAllByMasterId(Long id) {
         return null;
+    }
+
+    public int save(Order order, HttpServletRequest request) {
+        String INSERT_Order_SQL="INSERT INTO orders " +
+                "(order_name, order_description, area, order_status, customer_id, offset_data_time ) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        int result = 0;
+
+        try(PreparedStatement preparedStatement=connection.prepareStatement(INSERT_Order_SQL)) {
+            preparedStatement.setString(1, order.getOrderName());
+            preparedStatement.setString(2, order.getOrderDescription());
+            preparedStatement.setString(3, order.getArea().name());
+            preparedStatement.setString(4, OrderStatus.WAIT_FOR_ADMIN_CONFIRMATION.name());
+            preparedStatement.setLong(5, CommandUtility.getCurrentUserId(request));
+            preparedStatement.setObject(6, OffsetDateTime.now());
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e){
+        }
+        return result;
     }
 }

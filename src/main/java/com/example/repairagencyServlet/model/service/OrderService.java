@@ -5,11 +5,12 @@ import com.example.repairagencyServlet.controller.dto.PriceDto;
 import com.example.repairagencyServlet.exception.NotEnoughMoneyException;
 import com.example.repairagencyServlet.model.entity.Order;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface OrderService {
 
-    Order save(Order order);
+    int save(Order order, HttpServletRequest request);
     List<Order> findAllCurrentCustomerOrders();
     List<Order> findAllOrders();
     Order findOrderById(Long id);

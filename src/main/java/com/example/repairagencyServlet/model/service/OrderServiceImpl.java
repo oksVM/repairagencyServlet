@@ -9,6 +9,7 @@ import com.example.repairagencyServlet.model.entity.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,8 +22,11 @@ public class OrderServiceImpl implements OrderService{
 
 
     @Override
-    public Order save(Order order) {
-        return null;
+    public int save(Order order, HttpServletRequest request) {
+        try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
+            int result = dao.save(order, request);
+            return result;
+        }
     }
 
 
