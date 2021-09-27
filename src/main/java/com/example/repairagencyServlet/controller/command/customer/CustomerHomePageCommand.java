@@ -1,12 +1,12 @@
-package com.example.repairagencyServlet.controller.command.admin;
+package com.example.repairagencyServlet.controller.command.customer;
 
 import com.example.repairagencyServlet.controller.command.Command;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class SetPriceForOrder implements Command {
+public class CustomerHomePageCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
-        return null;
+        return "/WEB-INF/customer/customer_homepage.jsp";
     }
 }

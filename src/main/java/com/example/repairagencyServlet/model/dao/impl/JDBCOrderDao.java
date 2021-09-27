@@ -1,11 +1,9 @@
 package com.example.repairagencyServlet.model.dao.impl;
 
 import com.example.repairagencyServlet.controller.command.CommandUtility;
-import com.example.repairagencyServlet.controller.config.PasswordConfig;
+import com.example.repairagencyServlet.controller.dto.PriceDto;
 import com.example.repairagencyServlet.model.dao.OrderDao;
-import com.example.repairagencyServlet.model.entity.Area;
-import com.example.repairagencyServlet.model.entity.Order;
-import com.example.repairagencyServlet.model.entity.OrderStatus;
+import com.example.repairagencyServlet.model.entity.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
@@ -24,7 +22,25 @@ public class JDBCOrderDao implements OrderDao {
 
     @Override
     public Optional<Order> findById(Long id) {
-        return Optional.empty();
+
+            try (PreparedStatement ps = connection.prepareStatement("select * from orders where id = ?")) {
+                ps.setLong(1, id);
+                ResultSet rs = ps.executeQuery();
+
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                Order order = new Order();
+                order.setId(rs.getLong("id"));
+                order.setArea(Area.valueOf(rs.getString("area")));
+                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
+                order.setOrderName(rs.getString("order_name"));
+                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
+                order.setPrice(rs.getInt("price"));
+                return Optional.of(order);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     @Override
@@ -104,6 +120,7 @@ public class JDBCOrderDao implements OrderDao {
         return list;
     }
 
+
     public int save(Order order, HttpServletRequest request) {
         String INSERT_Order_SQL="INSERT INTO orders " +
                 "(order_name, order_description, area, order_status, customer_id, offset_data_time ) " +
@@ -121,6 +138,30 @@ public class JDBCOrderDao implements OrderDao {
         } catch (SQLException e){
         }
         return result;
+    }
+    @Override
+    public Order setPrice(PriceDto price, Long id) {
+        return null;
+    }
+
+    @Override
+    public Order payForOrder(Long id) {
+        return null;
+    }
+
+    @Override
+    public Order setMaster(Long masterId, Long orderId) {
+        return null;
+    }
+
+    @Override
+    public Order takeInWork(Long id) {
+        return null;
+    }
+
+    @Override
+    public Order markAsDone(Long id) {
+        return null;
     }
 
     @Override

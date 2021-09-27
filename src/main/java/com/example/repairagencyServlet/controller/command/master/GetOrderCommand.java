@@ -1,4 +1,4 @@
-package com.example.repairagencyServlet.controller.command.admin;
+package com.example.repairagencyServlet.controller.command.master;
 
 import com.example.repairagencyServlet.controller.command.Command;
 import com.example.repairagencyServlet.exception.OrderNotFoundException;
@@ -7,7 +7,7 @@ import com.example.repairagencyServlet.model.service.OrderServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class GetOneOrderCommand implements Command {
+public class GetOrderCommand implements Command {
     OrderService orderService = new OrderServiceImpl();
     @Override
     public String execute(HttpServletRequest request) {
@@ -16,6 +16,6 @@ public class GetOneOrderCommand implements Command {
         } catch (OrderNotFoundException e) {
             e.printStackTrace();
         }
-        return "/WEB-INF/admin/orderdetails.jsp";
+        return "/WEB-INF/master/orderdetails.jsp";
     }
 }
