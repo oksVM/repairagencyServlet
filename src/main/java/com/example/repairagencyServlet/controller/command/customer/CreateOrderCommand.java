@@ -1,13 +1,8 @@
 package com.example.repairagencyServlet.controller.command.customer;
 
 import com.example.repairagencyServlet.controller.command.Command;
-import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationException;
-import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Area;
 import com.example.repairagencyServlet.model.entity.Order;
-import com.example.repairagencyServlet.model.entity.Role;
-import com.example.repairagencyServlet.model.service.AppUserService;
-import com.example.repairagencyServlet.model.service.AppUserServiceImpl;
 import com.example.repairagencyServlet.model.service.OrderService;
 import com.example.repairagencyServlet.model.service.OrderServiceImpl;
 
@@ -27,8 +22,7 @@ public class CreateOrderCommand implements Command {
         ) {
             return "/WEB-INF/customer/neworder.jsp";
         }
-        System.out.println(name);
-        System.out.println(req.getParameter("category"));
+
         Area area = Area.valueOf(req.getParameter("category"));
         Order order = new Order();
         order.setOrderName(name);

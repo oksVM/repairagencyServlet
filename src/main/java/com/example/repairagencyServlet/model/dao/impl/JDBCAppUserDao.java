@@ -1,12 +1,15 @@
 package com.example.repairagencyServlet.model.dao.impl;
 
 import com.example.repairagencyServlet.controller.config.PasswordConfig;
+import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationException;
 import com.example.repairagencyServlet.model.dao.AppUserDao;
-import com.example.repairagencyServlet.model.entity.*;
+import com.example.repairagencyServlet.model.entity.AppUser;
+import com.example.repairagencyServlet.model.entity.Role;
 
-import java.sql.*;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +24,7 @@ public class JDBCAppUserDao implements AppUserDao {
     public JDBCAppUserDao() {
     }
 
-    public int create(AppUser appUser){
+    public int create(AppUser appUser) throws UserAlreadyExistAuthenticationException {
         String INSERT_APPUSER_SQL="INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
         int result = 0;
 
@@ -35,7 +38,7 @@ public class JDBCAppUserDao implements AppUserDao {
                 System.out.println(preparedStatement);
                 result = preparedStatement.executeUpdate();
             } catch (SQLException e){
-
+                  throw new UserAlreadyExistAuthenticationException();
             }
             return result;
     }
@@ -64,7 +67,6 @@ public class JDBCAppUserDao implements AppUserDao {
     public List<AppUser> findAllCustomers() {
         String SELECT_ALL_MASTERS="select app_user_id, first_name, last_name from app_user where role='CUSTOMER'";
         List<AppUser> result = new ArrayList<>();
-
         try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_MASTERS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
@@ -75,7 +77,6 @@ public class JDBCAppUserDao implements AppUserDao {
                 result.add(user);
             }
         } catch (SQLException e){
-
         }
         return result;
     }
@@ -137,6 +138,31 @@ public class JDBCAppUserDao implements AppUserDao {
         }
     }
 
+    public AppUser updateDeposit(Integer money, Long id) {
+        AppUser appUser = new AppUser();
+
+        try (PreparedStatement ps1 = connection.prepareStatement(
+                "select amount_of_money from app_user where app_user_id = ?;")) {
+            connection.setAutoCommit(false);
+            ps1.setLong(1,id);
+            ResultSet rs1 = ps1.executeQuery();
+            while (rs1.next()) {
+                Integer amountOfMoney = rs1.getInt("amount_of_money");
+                try (PreparedStatement ps2 = connection.prepareStatement(
+                        "update app_user set amount_of_money = ? where app_user_id = ?;")) {
+                    ps2.setInt(1,amountOfMoney+money);
+                    ps2.setLong(2,id);
+                    ps2.executeUpdate();
+                    connection.commit();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return appUser;
+    }
 
     @Override
     public void create(Object entity) {
@@ -168,4 +194,6 @@ public class JDBCAppUserDao implements AppUserDao {
     public void close() {
 
     }
+
+
 }

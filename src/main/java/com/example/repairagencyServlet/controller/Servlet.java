@@ -45,12 +45,12 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
         commands.put("/repairagencyServlet/admin/masters", new GetAllMastersCommand());
         commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviews());
-        commands.put("/repairagencyServlet/admin/customers", new GetAllCustomers());
+        commands.put("/repairagencyServlet/admin/customers", new GetAllCustomersCommand());
         commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
         commands.put("/repairagencyServlet/admin/orders", new GetAllOrderCommand());
-        commands.put("/repairagencyServlet/admin/order", new GetOneOrder());
-        commands.put("/repairagencyServlet/admin/order/price", new GetOneOrder());
-        commands.put("/repairagencyServlet/admin/order/master", new GetOneOrder());
+        commands.put("/repairagencyServlet/admin/order", new GetOneOrderCommand());
+        commands.put("/repairagencyServlet/admin/order/price", new GetOneOrderCommand());
+        commands.put("/repairagencyServlet/admin/order/master", new GetOneOrderCommand());
 
         commands.put("/repairagencyServlet/customer", new CustomerHomePage());
         commands.put("/repairagencyServlet/customer/deposit", new DepositCommand());

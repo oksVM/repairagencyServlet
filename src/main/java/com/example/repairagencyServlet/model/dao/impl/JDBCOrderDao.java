@@ -23,32 +23,6 @@ public class JDBCOrderDao implements OrderDao {
     }
 
     @Override
-    public void create(Object entity) {
-
-    }
-
-    @Override
-    public Optional findById(long id) {
-        return Optional.empty();
-    }
-
-
-    @Override
-    public void update(Object entity) {
-
-    }
-
-    @Override
-    public void delete(long id) {
-
-    }
-
-    @Override
-    public void close() {
-
-    }
-
-    @Override
     public Optional<Order> findById(Long id) {
         return Optional.empty();
     }
@@ -81,12 +55,53 @@ public class JDBCOrderDao implements OrderDao {
 
     @Override
     public List<Order> findAllByCustomerId(Long id) {
-        return null;
+        List<Order> list = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "select id, area, offset_data_time, order_name, order_status, price " +
+                        "from orders where customer_id = ?;")) {
+            ps.setLong(1,id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getLong("id"));
+                order.setArea(Area.valueOf(rs.getString("area")));
+                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
+                order.setOrderName(rs.getString("order_name"));
+                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
+                order.setPrice(rs.getInt("price"));
+
+                list.add(order);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+
     }
 
     @Override
     public List<Order> findAllByMasterId(Long id) {
-        return null;
+        List<Order> list = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "select id, area, offset_data_time, order_name, order_status, price " +
+                        "from orders where master_id = ?;")) {
+            ps.setLong(1,id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getLong("id"));
+                order.setArea(Area.valueOf(rs.getString("area")));
+                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
+                order.setOrderName(rs.getString("order_name"));
+                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
+                order.setPrice(rs.getInt("price"));
+
+                list.add(order);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
     }
 
     public int save(Order order, HttpServletRequest request) {
@@ -106,5 +121,31 @@ public class JDBCOrderDao implements OrderDao {
         } catch (SQLException e){
         }
         return result;
+    }
+
+    @Override
+    public void create(Object entity) {
+
+    }
+
+    @Override
+    public Optional findById(long id) {
+        return Optional.empty();
+    }
+
+
+    @Override
+    public void update(Object entity) {
+
+    }
+
+    @Override
+    public void delete(long id) {
+
+    }
+
+    @Override
+    public void close() {
+
     }
 }

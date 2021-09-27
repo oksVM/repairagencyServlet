@@ -128,6 +128,49 @@ import java.util.Set;
     public void setReviews(Set<Review> reviews) {
        this.reviews = reviews;
     }
+
+     public static class Builder {
+         private final AppUser user;
+
+         public Builder() {
+             this.user = new AppUser();
+         }
+
+         public Builder id(long id){
+             user.id = id;
+             return this;
+         }
+
+         public Builder firstName(String firstName){
+             user.firstName = firstName;
+             return this;
+         }
+
+         public Builder lastName(String lastName){
+             user.lastName = lastName;
+             return this;
+         }
+
+
+         public Builder email(String email){
+             user.email = email;
+             return this;
+         }
+
+         public Builder password(String password){
+             user.password = password;
+             return this;
+         }
+
+         public Builder role(Role role){
+             user.role = role;
+             return this;
+         }
+
+         public AppUser build(){
+             return user;
+         }
+     }
  }
 
 

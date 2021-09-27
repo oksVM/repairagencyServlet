@@ -11,7 +11,7 @@ import java.util.List;
 public interface OrderService {
 
     int save(Order order, HttpServletRequest request);
-    List<Order> findAllCurrentCustomerOrders();
+    List<Order> findAllCurrentCustomerOrders(Long id);
     List<Order> findAllOrders();
     Order findOrderById(Long id);
     Order setPrice(PriceDto price, Long id);

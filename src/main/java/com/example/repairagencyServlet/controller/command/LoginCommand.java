@@ -36,7 +36,7 @@ public class LoginCommand implements Command{
             }
         }
         catch (UsernameNotFoundException ex){
-            return("redirect:/repairagencyServlet/login?error");
+            return("redirect:/repairagencyServlet/login?error=true");
         }
 
         CommandUtility.setUserSession(request, user);
@@ -51,6 +51,5 @@ public class LoginCommand implements Command{
             default:
                 return("/WEB-INF/login.jsp");
         }
-
     }
 }
