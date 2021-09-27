@@ -40,7 +40,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public List<AppUser> findAllCustomers() {
         try (JDBCAppUserDao dao = (JDBCAppUserDao) daoFactory.createAppUserDao()) {
-            List<AppUser> list = dao.findAll();
+            List<AppUser> list = dao.findAllCustomers();
             return list;
         }
     }
@@ -48,7 +48,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public List<AppUser> findAllMasters() {
         try (JDBCAppUserDao dao = (JDBCAppUserDao) daoFactory.createAppUserDao()) {
-            List<AppUser> list = dao.findAll();
+            List<AppUser> list = dao.findAllMasters();
             return list;
         }
     }

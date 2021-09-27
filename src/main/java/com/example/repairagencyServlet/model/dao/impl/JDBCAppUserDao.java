@@ -65,12 +65,14 @@ public class JDBCAppUserDao implements AppUserDao {
 
     @Override
     public List<AppUser> findAllCustomers() {
-        String SELECT_ALL_MASTERS="select app_user_id, first_name, last_name from app_user where role='CUSTOMER'";
+        String SELECT_ALL_CUSTOMERS="select app_user_id, first_name, last_name from app_user where role='CUSTOMER'";
         List<AppUser> result = new ArrayList<>();
-        try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_MASTERS)) {
+        System.out.println("-------");
+        try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_CUSTOMERS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
                 AppUser user = new AppUser();
+                System.out.println(rs.getLong("app_user_id"));
                 user.setId(rs.getLong("app_user_id"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
