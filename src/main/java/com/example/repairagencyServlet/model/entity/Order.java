@@ -1,10 +1,6 @@
 package com.example.repairagencyServlet.model.entity;
 
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.time.OffsetDateTime;
 
 
@@ -12,15 +8,12 @@ public class Order {
 
     private Long id;
     private String orderName;
-    @Enumerated(value = EnumType.STRING)
     private Area area;
     private String orderDescription;
     private Integer price;
-    @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
     private AppUser customer;
     private AppUser master;
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private OffsetDateTime offsetDateTime;
 
 
@@ -103,51 +96,52 @@ public class Order {
             this.order = new Order();
         }
 
-        public Builder id(long id){
+        public Builder id(long id) {
             order.id = id;
             return this;
         }
 
-        public Builder orderName(String orderName){
+        public Builder orderName(String orderName) {
             order.orderName = orderName;
             return this;
         }
 
-        public Builder orderDescription(String orderDescription){
+        public Builder orderDescription(String orderDescription) {
             order.orderDescription = orderDescription;
             return this;
         }
 
-        public Builder orderArea(Area area){
+        public Builder orderArea(Area area) {
             order.area = area;
             return this;
         }
 
-        public Builder orderCustomer(AppUser user){
+        public Builder orderCustomer(AppUser user) {
             order.customer = user;
             return this;
         }
 
-        public Builder orderMaster(AppUser user){
+        public Builder orderMaster(AppUser user) {
             order.master = user;
             return this;
         }
 
-        public Builder orderDate(OffsetDateTime offsetDateTime){
+        public Builder orderDate(OffsetDateTime offsetDateTime) {
             order.offsetDateTime = offsetDateTime;
             return this;
         }
-        public Builder orderStatus(OrderStatus orderStatus){
+
+        public Builder orderStatus(OrderStatus orderStatus) {
             order.orderStatus = orderStatus;
             return this;
         }
 
-        public Builder orderPrice(Integer price){
+        public Builder orderPrice(Integer price) {
             order.price = price;
             return this;
         }
 
-        public Order build(){
+        public Order build() {
             return order;
         }
     }

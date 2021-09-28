@@ -6,13 +6,14 @@ import javax.sql.DataSource;
 
 public class ConnectionPoolHolder {
     private static volatile DataSource dataSource;
-    public static DataSource getDataSource(){
+
+    public static DataSource getDataSource() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (dataSource == null){
+        if (dataSource == null) {
             synchronized (ConnectionPoolHolder.class) {
                 if (dataSource == null) {
                     BasicDataSource ds = new BasicDataSource();

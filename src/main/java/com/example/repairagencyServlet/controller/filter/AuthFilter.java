@@ -2,12 +2,14 @@ package com.example.repairagencyServlet.controller.filter;
 
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Role;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
 @WebFilter(value = "/*")
 public class AuthFilter implements Filter {
 

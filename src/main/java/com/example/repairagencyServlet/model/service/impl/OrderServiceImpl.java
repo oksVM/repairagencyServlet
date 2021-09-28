@@ -46,18 +46,18 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-   @Override
-   public int setPrice(Integer price, Long id) throws OrderNotFoundException {
-       try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-           int order = dao.setPrice(price, id);
-           return order;
-       }
-   }
+    @Override
+    public int setPrice(Integer price, Long id) throws OrderNotFoundException {
+        try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
+            int order = dao.setPrice(price, id);
+            return order;
+        }
+    }
 
     @Override
-    public Order payForOrder(Long id) throws NotEnoughMoneyException, OrderNotFoundException {
+    public int payForOrder(Long id, Long userId) throws NotEnoughMoneyException, OrderNotFoundException {
         try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-            Order order = dao.payForOrder(id).orElseThrow(OrderNotFoundException::new);
+            int order = dao.payForOrder(id, userId);
             return order;
         }
     }

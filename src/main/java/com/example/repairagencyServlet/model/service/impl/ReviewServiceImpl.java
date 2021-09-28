@@ -1,32 +1,30 @@
 package com.example.repairagencyServlet.model.service.impl;
 
 
-/*
-@Service
-public class ReviewServiceImpl implements ReviewService{
+import com.example.repairagencyServlet.exception.OrderNotFoundException;
+import com.example.repairagencyServlet.model.dao.DaoFactory;
+import com.example.repairagencyServlet.model.dao.impl.JDBCReviewDao;
+import com.example.repairagencyServlet.model.entity.Review;
+import com.example.repairagencyServlet.model.service.ReviewService;
+
+import java.util.List;
+
+public class ReviewServiceImpl implements ReviewService {
     private DaoFactory daoFactory = DaoFactory.getInstance();
-    OrderService orderService = new OrderServiceImpl();
-
-
 
     @Override
     public List<Review> findAllReviewsByMasterId(Long id) {
-        return daoFactory.createReviewDao().findAllByMasterId();
+        try (JDBCReviewDao dao = (JDBCReviewDao) daoFactory.createReviewDao()) {
+            List<Review> result = dao.findAllByMasterId(id);
+            return result;
+        }
     }
 
     @Override
-    public Review leaveFeedback(String feedback, Long orderId) {
-        Order order = orderService.findOrderById(orderId);
-        Long masterId = order.getMaster().getId();
-        AppUser updatedMaster = appUserService.findById(masterId);
-        Review review = daoFactory.createReviewDao().create().save(Review.builder()
-                .master(updatedMaster)
-                .reviewDescription(feedback)
-                .build());
-        order.setOrderStatus(OrderStatus.REVIEWED);
-        orderService.save(order);
-
-        return review;
+    public int leaveFeedback(String feedback, Long orderId) throws OrderNotFoundException {
+        try (JDBCReviewDao dao = (JDBCReviewDao) daoFactory.createReviewDao()) {
+            int result = dao.save(feedback, orderId);
+            return result;
+        }
     }
 }
-*/

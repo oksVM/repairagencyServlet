@@ -8,48 +8,53 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-//TODO
-public class LoginCommand implements Command{
+
+public class LoginCommand implements Command {
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public String execute(HttpServletRequest request) {
         AppUserService userService = new AppUserServiceImpl();
         if (request.getMethod().equals("GET")) {
-            request.setAttribute("error", request.getParameter("error")!=null);
-            request.setAttribute("logout", request.getParameter("logout")!=null);
-            request.setAttribute("registered", request.getParameter("registered")!=null);
-            return("/WEB-INF/login.jsp");
+            request.setAttribute("error", request.getParameter("error") != null);
+            request.setAttribute("logout", request.getParameter("logout") != null);
+            request.setAttribute("registered", request.getParameter("registered") != null);
+            logger.info("Login form");
+            return ("/WEB-INF/login.jsp");
         }
 
         String username = request.getParameter("username");
 
-        if(CommandUtility.checkUserIsLogged(request, username)){
+        if (CommandUtility.checkUserIsLogged(request, username)) {
+            logger.info("Access denied");
             return "/WEB-INF/noAccess.jsp";
         }
 
         AppUser user;
         try {
-                user = userService.loadUserByEmail(username, request.getParameter("password"));
-            if (user==null){
+            user = userService.loadUserByEmail(username, request.getParameter("password"));
+            if (user == null) {
                 throw new UserNotFoundException();
             }
-        }
-        catch (UserNotFoundException ex){
-            return("redirect:/repairagencyServlet/login?error=true");
+        } catch (UserNotFoundException ex) {
+            logger.info("User not found");
+            return ("redirect:/repairagencyServlet/login?error=true");
         }
 
         CommandUtility.setUserSession(request, user);
 
         switch (user.getRole()) {
             case ADMIN:
+                logger.info("Admin has been logged");
                 return "redirect:/repairagencyServlet/admin";
             case CUSTOMER:
+                logger.info("Customer has been logged");
                 return "redirect:/repairagencyServlet/customer";
             case MASTER:
+                logger.info("Master has been logged");
                 return "redirect:/repairagencyServlet/master";
             default:
-                return("/WEB-INF/login.jsp");
+                return ("/WEB-INF/login.jsp");
         }
     }
 }

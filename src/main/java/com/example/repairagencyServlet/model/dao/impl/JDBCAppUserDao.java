@@ -25,53 +25,53 @@ public class JDBCAppUserDao implements AppUserDao {
     }
 
     public int create(AppUser appUser) throws UserAlreadyExistAuthenticationException {
-        String INSERT_APPUSER_SQL="INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
+        String INSERT_APPUSER_SQL = "INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
         int result = 0;
 
-            try(PreparedStatement preparedStatement=connection.prepareStatement(INSERT_APPUSER_SQL)) {
-                preparedStatement.setString(1, appUser.getEmail());
-                preparedStatement.setString(2, appUser.getFirstName());
-                preparedStatement.setString(3, appUser.getLastName());
-                preparedStatement.setString(4, PasswordConfig.passwordEncoder().encode(appUser.getPassword()));
-                preparedStatement.setString(5, "CUSTOMER");
-                System.out.println(preparedStatement);
-                result = preparedStatement.executeUpdate();
-            } catch (SQLException e){
-                  throw new UserAlreadyExistAuthenticationException();
-            }
-            return result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_APPUSER_SQL)) {
+            preparedStatement.setString(1, appUser.getEmail());
+            preparedStatement.setString(2, appUser.getFirstName());
+            preparedStatement.setString(3, appUser.getLastName());
+            preparedStatement.setString(4, PasswordConfig.passwordEncoder().encode(appUser.getPassword()));
+            preparedStatement.setString(5, "CUSTOMER");
+            System.out.println(preparedStatement);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new UserAlreadyExistAuthenticationException();
+        }
+        return result;
     }
 
     @Override
     public List<AppUser> findAllMasters() {
-        String SELECT_ALL_MASTERS="select * from app_user where role='MASTER'";
+        String SELECT_ALL_MASTERS = "select * from app_user where role='MASTER'";
         List<AppUser> result = new ArrayList<>();
 
-        try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_MASTERS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_MASTERS)) {
             ResultSet rs = preparedStatement.executeQuery();
             AppUserMapper appUserMapper = new AppUserMapper();
-            while (rs.next()){
+            while (rs.next()) {
                 AppUser appUser = appUserMapper.extractFromResultSet(rs);
                 result.add(appUser);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
 
         }
         return result;
     }
 
     @Override
-    public List<AppUser> findAllCustomers(){
-        String SELECT_ALL_CUSTOMERS="select * from app_user where role='CUSTOMER'";
+    public List<AppUser> findAllCustomers() {
+        String SELECT_ALL_CUSTOMERS = "select * from app_user where role='CUSTOMER'";
         List<AppUser> result = new ArrayList<>();
-        try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_CUSTOMERS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CUSTOMERS)) {
             ResultSet rs = preparedStatement.executeQuery();
             AppUserMapper appUserMapper = new AppUserMapper();
-            while (rs.next()){
+            while (rs.next()) {
                 AppUser appUser = appUserMapper.extractFromResultSet(rs);
                 result.add(appUser);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
         }
         return result;
     }
@@ -100,12 +100,11 @@ public class JDBCAppUserDao implements AppUserDao {
     }
 
 
-
     public int createMaster(AppUser appUser) throws UserAlreadyExistAuthenticationException {
-        String INSERT_APPUSER_SQL="INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
+        String INSERT_APPUSER_SQL = "INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
         int result;
 
-        try(PreparedStatement preparedStatement=connection.prepareStatement(INSERT_APPUSER_SQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_APPUSER_SQL)) {
             preparedStatement.setString(1, appUser.getEmail());
             preparedStatement.setString(2, appUser.getFirstName());
             preparedStatement.setString(3, appUser.getLastName());
@@ -113,7 +112,7 @@ public class JDBCAppUserDao implements AppUserDao {
             preparedStatement.setString(4, passwordConfig.passwordEncoder().encode(appUser.getPassword()));
             preparedStatement.setString(5, "MASTER");
             result = preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new UserAlreadyExistAuthenticationException();
         }
         return result;
@@ -136,7 +135,7 @@ public class JDBCAppUserDao implements AppUserDao {
             if (user == null || !user.getEmail().equals(email) || !PasswordConfig.passwordEncoder().matches(password, user.getPassword())) {
                 return null;
             }
-                return user;
+            return user;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -149,14 +148,14 @@ public class JDBCAppUserDao implements AppUserDao {
         try (PreparedStatement ps1 = connection.prepareStatement(
                 "select amount_of_money from app_user where app_user_id = ?;")) {
             connection.setAutoCommit(false);
-            ps1.setLong(1,id);
+            ps1.setLong(1, id);
             ResultSet rs1 = ps1.executeQuery();
             while (rs1.next()) {
                 Integer amountOfMoney = rs1.getInt("amount_of_money");
                 try (PreparedStatement ps2 = connection.prepareStatement(
                         "update app_user set amount_of_money = ? where app_user_id = ?;")) {
-                    ps2.setInt(1,amountOfMoney+money);
-                    ps2.setLong(2,id);
+                    ps2.setInt(1, amountOfMoney + money);
+                    ps2.setLong(2, id);
                     ps2.executeUpdate();
                     connection.commit();
                 } catch (SQLException ex) {

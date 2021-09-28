@@ -6,9 +6,12 @@ import com.example.repairagencyServlet.model.entity.AppUser;
 import java.util.List;
 import java.util.Optional;
 
-public interface AppUserDao extends GenericDAO{
+public interface AppUserDao extends GenericDAO {
     List<AppUser> findAllMasters();
+
     List<AppUser> findAllCustomers() throws UserAlreadyExistAuthenticationException;
+
     Optional<AppUser> findById(Long id);
+
     AppUser findByEmail(String email, String password);
 }

@@ -22,9 +22,10 @@ public class OrderMapper implements ObjectMapper<Order> {
                 .orderDescription(rs.getString("order_description"))
                 .orderStatus(OrderStatus.valueOf(rs.getString("order_status")))
                 .orderPrice(rs.getInt("price"))
-                .orderDate(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")))
+                .orderDate(OffsetDateTime.ofInstant(((Timestamp) rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")))
                 .build();
     }
+
     @Override
     public Order makeUnique(Map<Long, Order> cache, Order order) {
         cache.putIfAbsent(order.getId(), order);

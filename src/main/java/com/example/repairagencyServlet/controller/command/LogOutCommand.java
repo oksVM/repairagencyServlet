@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LogOutCommand implements Command {
     private final Logger logger = LogManager.getLogger(this.getClass());
+
     @Override
     public String execute(HttpServletRequest request) {
         request.getServletContext().removeAttribute("user");
@@ -18,6 +19,7 @@ public class LogOutCommand implements Command {
         appUser.setId(0L);
         appUser.setRole(Role.UNKNOWN);
         CommandUtility.setUserSession(request, appUser);
+        logger.info("User has been log out");
         return "redirect:/repairagencyServlet/login?logout";
     }
 }

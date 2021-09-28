@@ -56,13 +56,14 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUser loadUserByEmail(String email, String password) throws UserNotFoundException {
-        try (AppUserDao dao = daoFactory.createAppUserDao()){
+        try (AppUserDao dao = daoFactory.createAppUserDao()) {
             return dao.findByEmail(email, password);
         }
     }
+
     @Override
-    public AppUser findById(Long id) throws UserNotFoundException{
-        try (AppUserDao dao = daoFactory.createAppUserDao()){
+    public AppUser findById(Long id) throws UserNotFoundException {
+        try (AppUserDao dao = daoFactory.createAppUserDao()) {
             return dao.findById(id).orElseThrow(UserNotFoundException::new);
         }
     }

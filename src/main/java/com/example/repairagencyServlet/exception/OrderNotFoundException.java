@@ -1,6 +1,6 @@
 package com.example.repairagencyServlet.exception;
 
-public class OrderNotFoundException extends Exception{
+public class OrderNotFoundException extends Exception {
 
     public OrderNotFoundException() {
         super("Order doesn't exist.");

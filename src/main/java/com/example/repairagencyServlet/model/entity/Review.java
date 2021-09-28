@@ -38,22 +38,22 @@ public class Review {
             this.review = new Review();
         }
 
-        public Builder id(long id){
+        public Builder id(long id) {
             review.id = id;
             return this;
         }
 
-        public Builder description(String description){
+        public Builder description(String description) {
             review.reviewDescription = description;
             return this;
         }
 
-        public Builder master(AppUser user){
+        public Builder master(AppUser user) {
             review.master = user;
             return this;
         }
 
-        public Review build(){
+        public Review build() {
             return review;
         }
     }

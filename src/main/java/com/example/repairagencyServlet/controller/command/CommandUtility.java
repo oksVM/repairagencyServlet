@@ -33,11 +33,11 @@ public class CommandUtility {
         context.setAttribute("loggedUsers", loggedUsers);
     }
 
-    public static boolean checkUserIsLogged(HttpServletRequest request, String userName){
+    public static boolean checkUserIsLogged(HttpServletRequest request, String userName) {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext()
                 .getAttribute("loggedUsers");
 
-        if(loggedUsers.stream().anyMatch(userName::equals)){
+        if (loggedUsers.stream().anyMatch(userName::equals)) {
             return true;
         }
         loggedUsers.add(userName);
