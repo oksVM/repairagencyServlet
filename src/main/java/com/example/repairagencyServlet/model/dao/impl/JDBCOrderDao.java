@@ -1,6 +1,7 @@
 package com.example.repairagencyServlet.model.dao.impl;
 
 import com.example.repairagencyServlet.controller.command.CommandUtility;
+import com.example.repairagencyServlet.exception.OrderNotFoundException;
 import com.example.repairagencyServlet.model.dao.OrderDao;
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Order;
@@ -52,7 +53,7 @@ public class JDBCOrderDao implements OrderDao {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Order order = orderMapper.extractFromResultSet(rs);
-                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("email")).email(rs.getString("email")).build()));
+                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("id")).email(rs.getString("email")).build()));
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -74,7 +75,7 @@ public class JDBCOrderDao implements OrderDao {
             AppUserMapper userMapper = new AppUserMapper();
             while (rs.next()) {
                 Order order = orderMapper.extractFromResultSet(rs);
-                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("email")).email(rs.getString("email")).build()));
+                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("id")).email(rs.getString("email")).build()));
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -88,8 +89,7 @@ public class JDBCOrderDao implements OrderDao {
     public List<Order> findAllByMasterId(Long id) {
         List<Order> list = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(
-                "select id, area, offset_data_time, order_name, order_status, price " +
-                        "from orders where master_id = ?;")) {
+                "select * from orders where master_id = ?;")) {
             ps.setLong(1,id);
             ResultSet rs = ps.executeQuery();
             OrderMapper orderMapper = new OrderMapper();
@@ -123,8 +123,18 @@ public class JDBCOrderDao implements OrderDao {
         return result;
     }
     @Override
-    public Optional<Order> setPrice(Integer price, Long id) {
-        return Optional.empty();
+    public int setPrice(Integer price, Long id) throws OrderNotFoundException {
+     int result = 0;
+        try(PreparedStatement preparedStatement=connection.prepareStatement("UPDATE orders " +
+                "SET price = ?, order_status = ? WHERE id = ?")) {
+            preparedStatement.setInt(1, price);
+            preparedStatement.setString(2, OrderStatus.WAIT_FOR_PAYMENT.name());
+            preparedStatement.setLong(3, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            throw new OrderNotFoundException();
+        }
+        return result;
     }
 
     @Override
@@ -133,18 +143,46 @@ public class JDBCOrderDao implements OrderDao {
     }
 
     @Override
-    public Optional<Order> setMaster(Long masterId, Long orderId) {
-        return null;
+    public int setMaster(Long masterId, Long orderId) throws OrderNotFoundException {
+        int result = 0;
+        try(PreparedStatement preparedStatement=connection.prepareStatement("UPDATE orders " +
+                "SET master_id = ?, order_status = ? WHERE id = ?")) {
+            preparedStatement.setLong(1, masterId);
+            preparedStatement.setString(2, OrderStatus.WAIT_FOR_MASTER_CONFIRMATION.name());
+            preparedStatement.setLong(3, orderId);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            throw new OrderNotFoundException();
+        }
+        return result;
     }
 
     @Override
-    public Optional<Order> takeInWork(Long id) {
-        return null;
+    public int takeInWork(Long id) throws OrderNotFoundException {
+        int result = 0;
+        try(PreparedStatement preparedStatement=connection.prepareStatement("UPDATE orders " +
+                "SET order_status = ? WHERE id = ?")) {
+            preparedStatement.setString(1, OrderStatus.IN_WORK.name());
+            preparedStatement.setLong(2, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            throw new OrderNotFoundException();
+        }
+        return result;
     }
 
     @Override
-    public Optional<Order> markAsDone(Long id) {
-        return null;
+    public int markAsDone(Long id) throws OrderNotFoundException {
+        int result = 0;
+        try(PreparedStatement preparedStatement=connection.prepareStatement("UPDATE orders " +
+                "SET order_status = ? WHERE id = ?")) {
+            preparedStatement.setString(1, OrderStatus.DONE.name());
+            preparedStatement.setLong(2, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            throw new OrderNotFoundException();
+        }
+        return result;
     }
 
     @Override

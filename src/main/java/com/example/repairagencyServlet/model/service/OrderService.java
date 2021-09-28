@@ -14,11 +14,11 @@ public interface OrderService {
     List<Order> findAllCurrentCustomerOrders(Long id);
     List<Order> findAllOrders();
     Order findOrderById(Long id) throws OrderNotFoundException;
-    Order setPrice(Integer price, Long id) throws OrderNotFoundException;
+    int setPrice(Integer price, Long id) throws OrderNotFoundException;
     Order payForOrder(Long id) throws NotEnoughMoneyException, OrderNotFoundException;
-    Order setMaster(Long masterId, Long id) throws OrderNotFoundException;
+    int setMaster(Long masterId, Long id) throws OrderNotFoundException;
     List<Order> findAllCurrentMasterOrders(Long id);
-    Order takeInWork(Long id) throws OrderNotFoundException;
-    Order markAsDone(Long id) throws OrderNotFoundException;
+    int takeInWork(Long id) throws OrderNotFoundException;
+    int markAsDone(Long id) throws OrderNotFoundException;
 }
 

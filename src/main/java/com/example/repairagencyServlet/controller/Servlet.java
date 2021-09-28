@@ -7,10 +7,7 @@ import com.example.repairagencyServlet.controller.command.LogOutCommand;
 import com.example.repairagencyServlet.controller.command.LoginCommand;
 import com.example.repairagencyServlet.controller.command.admin.*;
 import com.example.repairagencyServlet.controller.command.customer.*;
-import com.example.repairagencyServlet.controller.command.master.GetAllCurrentMasterOrdersCommand;
-import com.example.repairagencyServlet.controller.command.master.MarkOrderAsDoneCommand;
-import com.example.repairagencyServlet.controller.command.master.MasterHomePageCommand;
-import com.example.repairagencyServlet.controller.command.master.TakeOrderInWorkCommand;
+import com.example.repairagencyServlet.controller.command.master.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,8 +47,8 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/admin/deposit", new CustomerDepositCommand());
         commands.put("/repairagencyServlet/admin/orders", new GetAllOrderCommand());
         commands.put("/repairagencyServlet/admin/order", new GetOneOrderCommand());
-        commands.put("/repairagencyServlet/admin/order/price", new GetOneOrderCommand());
-        commands.put("/repairagencyServlet/admin/order/master", new GetOneOrderCommand());
+        commands.put("/repairagencyServlet/admin/order/price", new SetPriceForOrderCommand());
+        commands.put("/repairagencyServlet/admin/order/master", new SetMasterForOrderCommand());
 
         commands.put("/repairagencyServlet/customer", new CustomerHomePageCommand());
         commands.put("/repairagencyServlet/customer/deposit", new DepositCommand());
@@ -63,7 +60,7 @@ public class Servlet extends HttpServlet {
 
         commands.put("/repairagencyServlet/master", new MasterHomePageCommand());
         commands.put("/repairagencyServlet/master/orders", new GetAllCurrentMasterOrdersCommand());
-        commands.put("/repairagencyServlet/master/order", new MasterHomePageCommand());
+        commands.put("/repairagencyServlet/master/order", new GetOrderCommand());
         commands.put("/repairagencyServlet/master/order/in_work", new TakeOrderInWorkCommand());
         commands.put("/repairagencyServlet/master/order/done", new MarkOrderAsDoneCommand());
 

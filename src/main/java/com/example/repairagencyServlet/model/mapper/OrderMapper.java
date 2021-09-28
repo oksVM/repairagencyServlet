@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class OrderMapper implements ObjectMapper<Order> {
 
-
     @Override
     public Order extractFromResultSet(ResultSet rs) throws SQLException {
         return new Order.Builder()
@@ -26,10 +25,8 @@ public class OrderMapper implements ObjectMapper<Order> {
                 .orderDate(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")))
                 .build();
     }
-
     @Override
-    public Order makeUnique(Map<Long, Order> cache,
-                              Order order) {
+    public Order makeUnique(Map<Long, Order> cache, Order order) {
         cache.putIfAbsent(order.getId(), order);
         return cache.get(order.getId());
     }

@@ -4,14 +4,17 @@ import com.example.repairagencyServlet.exception.UserNotFoundException;
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.service.AppUserService;
 import com.example.repairagencyServlet.model.service.impl.AppUserServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 //TODO
 public class LoginCommand implements Command{
-    private AppUserService userService = new AppUserServiceImpl();
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public String execute(HttpServletRequest request) {
+        AppUserService userService = new AppUserServiceImpl();
         if (request.getMethod().equals("GET")) {
             request.setAttribute("error", request.getParameter("error")!=null);
             request.setAttribute("logout", request.getParameter("logout")!=null);

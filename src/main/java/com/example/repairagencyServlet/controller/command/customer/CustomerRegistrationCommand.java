@@ -7,6 +7,8 @@ import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Role;
 import com.example.repairagencyServlet.model.service.AppUserService;
 import com.example.repairagencyServlet.model.service.impl.AppUserServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class CustomerRegistrationCommand implements Command {
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public String execute(HttpServletRequest req) {
@@ -30,10 +33,11 @@ public class CustomerRegistrationCommand implements Command {
                 email == null || email.equals("") ||
                 password == null || password.equals("")
         ) {
+            logger.info("Form for new master registration");
             return "/WEB-INF/registration.jsp";
         }
 
-       AppUser user = new AppUser.Builder()
+        AppUser user = new AppUser.Builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
@@ -41,18 +45,20 @@ public class CustomerRegistrationCommand implements Command {
                 .role(Role.CUSTOMER).build();
 
         if (validate(user, req)) {
-            req.setAttribute("firstName",firstName);
-            req.setAttribute("lastName",lastName);
-            req.setAttribute("email",email);
+            req.setAttribute("firstName", firstName);
+            req.setAttribute("lastName", lastName);
+            req.setAttribute("email", email);
+            logger.info("Registration error because of invalid parameters");
             return "/WEB-INF/registration.jsp";
         }
 
         try {
             userService.saveNewCustomer(user);
+        } catch (UserAlreadyExistAuthenticationException ex) {
+            logger.info("User already exist");
+            return "redirect:/repairagencyServlet/registration?error=true";
         }
-        catch (UserAlreadyExistAuthenticationException ex) {
-            return "redirect:/repairagencyServlet/registration?error=true" ;
-        }
+        logger.info("Customer registered");
         return "redirect:/repairagencyServlet/registration?registered=true";
     }
 
@@ -69,6 +75,6 @@ public class CustomerRegistrationCommand implements Command {
 
         fieldsValidity.forEach(req::setAttribute);
 
-        return fieldsValidity.values().stream().anyMatch(val->val);
+        return fieldsValidity.values().stream().anyMatch(val -> val);
     }
 }

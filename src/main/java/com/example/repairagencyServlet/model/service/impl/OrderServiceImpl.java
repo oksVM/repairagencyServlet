@@ -47,9 +47,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
    @Override
-   public Order setPrice(Integer price, Long id) throws OrderNotFoundException {
+   public int setPrice(Integer price, Long id) throws OrderNotFoundException {
        try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-           Order order = dao.setPrice(price, id).orElseThrow(OrderNotFoundException::new);
+           int order = dao.setPrice(price, id);
            return order;
        }
    }
@@ -63,9 +63,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order setMaster(Long masterId, Long orderId) throws OrderNotFoundException {
+    public int setMaster(Long masterId, Long orderId) throws OrderNotFoundException {
         try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-            Order order = dao.setMaster(masterId, orderId).orElseThrow(OrderNotFoundException::new);;
+            int order = dao.setMaster(masterId, orderId);
             return order;
         }
     }
@@ -79,17 +79,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order takeInWork(Long id) throws OrderNotFoundException {
+    public int takeInWork(Long id) throws OrderNotFoundException {
         try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-            Order order = dao.takeInWork(id).orElseThrow(OrderNotFoundException::new);
+            int order = dao.takeInWork(id);
             return order;
         }
     }
 
     @Override
-    public Order markAsDone(Long id) throws OrderNotFoundException {
+    public int markAsDone(Long id) throws OrderNotFoundException {
         try (JDBCOrderDao dao = (JDBCOrderDao) daoFactory.createOrderDao()) {
-            Order order = dao.markAsDone(id).orElseThrow(OrderNotFoundException::new);
+            int order = dao.markAsDone(id);
             return order;
         }
     }

@@ -1,5 +1,6 @@
 package com.example.repairagencyServlet.model.dao;
 
+import com.example.repairagencyServlet.exception.OrderNotFoundException;
 import com.example.repairagencyServlet.model.entity.Order;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface OrderDao extends GenericDAO{
     List<Order> findAll();
     List<Order> findAllByCustomerId(Long id);
     List<Order> findAllByMasterId(Long id);
-    Optional<Order> setPrice(Integer price, Long id);
+    int setPrice(Integer price, Long id) throws OrderNotFoundException;
     Optional<Order> payForOrder(Long id);
-    Optional<Order> setMaster(Long masterId, Long orderId);
-    Optional<Order> takeInWork(Long id);
-    Optional<Order> markAsDone(Long id);
+    int setMaster(Long masterId, Long orderId) throws OrderNotFoundException;
+    int takeInWork(Long id) throws OrderNotFoundException;
+    int markAsDone(Long id) throws OrderNotFoundException;
 }

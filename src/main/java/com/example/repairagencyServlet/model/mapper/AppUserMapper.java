@@ -21,11 +21,9 @@ public class AppUserMapper implements ObjectMapper<AppUser> {
                 .email(rs.getString("email"))
                 .build();
     }
-
     @Override
-    public AppUser makeUnique(Map<Long, AppUser> cache,
-                           AppUser user) {
-        cache.putIfAbsent(user.getId(), user);
-        return cache.get(user.getId());
+    public AppUser makeUnique(Map<Long, AppUser> cache, AppUser appUser) {
+        cache.putIfAbsent(appUser.getId(), appUser);
+        return cache.get(appUser.getId());
     }
 }
