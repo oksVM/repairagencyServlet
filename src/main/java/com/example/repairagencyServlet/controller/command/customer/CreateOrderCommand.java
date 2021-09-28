@@ -4,7 +4,7 @@ import com.example.repairagencyServlet.controller.command.Command;
 import com.example.repairagencyServlet.model.entity.Area;
 import com.example.repairagencyServlet.model.entity.Order;
 import com.example.repairagencyServlet.model.service.OrderService;
-import com.example.repairagencyServlet.model.service.OrderServiceImpl;
+import com.example.repairagencyServlet.model.service.impl.OrderServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,17 +24,15 @@ public class CreateOrderCommand implements Command {
         }
 
         Area area = Area.valueOf(req.getParameter("category"));
-        Order order = new Order();
-        order.setOrderName(name);
-        order.setArea(area);
-        order.setOrderDescription(description);
-        try {
-            orderService.save(order, req);
-        }catch (RuntimeException e){
-            System.out.println("err");
-            return "redirect:/repairagencyServlet/customer/create_order";
-        }
-        return "redirect:/repairagencyServlet/customer/create_order";
+        Order order = new Order.Builder()
+                .orderName(name)
+                .orderDescription(description)
+                .orderArea(area)
+                .build();
+
+        orderService.save(order, req);
+
+        return "redirect:/repairagencyServlet/customer/create_order?success=true";
     }
 
 }

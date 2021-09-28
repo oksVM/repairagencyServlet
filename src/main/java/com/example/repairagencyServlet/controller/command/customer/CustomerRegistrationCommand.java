@@ -6,7 +6,7 @@ import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationE
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.entity.Role;
 import com.example.repairagencyServlet.model.service.AppUserService;
-import com.example.repairagencyServlet.model.service.AppUserServiceImpl;
+import com.example.repairagencyServlet.model.service.impl.AppUserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

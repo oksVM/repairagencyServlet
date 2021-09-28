@@ -1,17 +1,21 @@
 package com.example.repairagencyServlet.model.dao.impl;
 
 import com.example.repairagencyServlet.controller.command.CommandUtility;
-import com.example.repairagencyServlet.controller.dto.PriceDto;
 import com.example.repairagencyServlet.model.dao.OrderDao;
-import com.example.repairagencyServlet.model.entity.*;
+import com.example.repairagencyServlet.model.entity.AppUser;
+import com.example.repairagencyServlet.model.entity.Order;
+import com.example.repairagencyServlet.model.entity.OrderStatus;
+import com.example.repairagencyServlet.model.mapper.AppUserMapper;
+import com.example.repairagencyServlet.model.mapper.OrderMapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 
 public class JDBCOrderDao implements OrderDao {
     private Connection connection;
@@ -22,21 +26,14 @@ public class JDBCOrderDao implements OrderDao {
 
     @Override
     public Optional<Order> findById(Long id) {
-
             try (PreparedStatement ps = connection.prepareStatement("select * from orders where id = ?")) {
                 ps.setLong(1, id);
                 ResultSet rs = ps.executeQuery();
-
+                OrderMapper orderMapper = new OrderMapper();
                 if (!rs.next()) {
                     return Optional.empty();
                 }
-                Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setArea(Area.valueOf(rs.getString("area")));
-                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
-                order.setOrderName(rs.getString("order_name"));
-                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
-                order.setPrice(rs.getInt("price"));
+                Order order = orderMapper.extractFromResultSet(rs);
                 return Optional.of(order);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -46,21 +43,16 @@ public class JDBCOrderDao implements OrderDao {
     @Override
     public List<Order> findAll() {
         List<Order> list = new ArrayList<>();
+        Map<Long, AppUser> cache = new HashMap<>();
         try (PreparedStatement ps = connection.prepareStatement(
-                "select o.id, o.area, o.offset_data_time, o.order_name, o.order_status, o.price, u.email " +
+                "select o.*, u.app_user_id, u.email " +
                         "from orders o left join app_user u on u.app_user_id=master_id;")) {
-
+        OrderMapper orderMapper = new OrderMapper();
+        AppUserMapper userMapper = new AppUserMapper();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setArea(Area.valueOf(rs.getString("area")));
-                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
-                order.setOrderName(rs.getString("order_name"));
-                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
-                order.setPrice(rs.getInt("price"));
-                //order.setMaster(rs.);
-
+                Order order = orderMapper.extractFromResultSet(rs);
+                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("email")).email(rs.getString("email")).build()));
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -72,20 +64,17 @@ public class JDBCOrderDao implements OrderDao {
     @Override
     public List<Order> findAllByCustomerId(Long id) {
         List<Order> list = new ArrayList<>();
+        Map<Long, AppUser> cache = new HashMap<>();
         try (PreparedStatement ps = connection.prepareStatement(
-                "select id, area, offset_data_time, order_name, order_status, price " +
-                        "from orders where customer_id = ?;")) {
+                "select o.*, u.app_user_id, u.email " +
+                        "from orders o left join app_user u on o.master_id = u.app_user_id where customer_id = ?;")) {
             ps.setLong(1,id);
             ResultSet rs = ps.executeQuery();
+            OrderMapper orderMapper = new OrderMapper();
+            AppUserMapper userMapper = new AppUserMapper();
             while (rs.next()) {
-                Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setArea(Area.valueOf(rs.getString("area")));
-                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
-                order.setOrderName(rs.getString("order_name"));
-                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
-                order.setPrice(rs.getInt("price"));
-
+                Order order = orderMapper.extractFromResultSet(rs);
+                order.setMaster(userMapper.makeUnique(cache, new AppUser.Builder().id(rs.getLong("email")).email(rs.getString("email")).build()));
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -103,15 +92,9 @@ public class JDBCOrderDao implements OrderDao {
                         "from orders where master_id = ?;")) {
             ps.setLong(1,id);
             ResultSet rs = ps.executeQuery();
+            OrderMapper orderMapper = new OrderMapper();
             while (rs.next()) {
-                Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setArea(Area.valueOf(rs.getString("area")));
-                order.setOffsetDateTime(OffsetDateTime.ofInstant(((Timestamp)rs.getObject("offset_data_time")).toInstant(), ZoneId.of("UTC")));
-                order.setOrderName(rs.getString("order_name"));
-                order.setOrderStatus(OrderStatus.valueOf(rs.getString("order_status")));
-                order.setPrice(rs.getInt("price"));
-
+                Order order = orderMapper.extractFromResultSet(rs);
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -140,53 +123,44 @@ public class JDBCOrderDao implements OrderDao {
         return result;
     }
     @Override
-    public Order setPrice(PriceDto price, Long id) {
+    public Optional<Order> setPrice(Integer price, Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Order> payForOrder(Long id) {
         return null;
     }
 
     @Override
-    public Order payForOrder(Long id) {
+    public Optional<Order> setMaster(Long masterId, Long orderId) {
         return null;
     }
 
     @Override
-    public Order setMaster(Long masterId, Long orderId) {
+    public Optional<Order> takeInWork(Long id) {
         return null;
     }
 
     @Override
-    public Order takeInWork(Long id) {
+    public Optional<Order> markAsDone(Long id) {
         return null;
     }
 
     @Override
-    public Order markAsDone(Long id) {
-        return null;
-    }
-
-    @Override
-    public void create(Object entity) {
-
-    }
+    public void create(Object entity) {}
 
     @Override
     public Optional findById(long id) {
         return Optional.empty();
     }
 
+    @Override
+    public void update(Object entity) {}
 
     @Override
-    public void update(Object entity) {
-
-    }
+    public void delete(long id) {}
 
     @Override
-    public void delete(long id) {
-
-    }
-
-    @Override
-    public void close() {
-
-    }
+    public void close() {}
 }

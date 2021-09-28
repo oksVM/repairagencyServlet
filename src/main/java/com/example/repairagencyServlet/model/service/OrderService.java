@@ -1,7 +1,6 @@
 package com.example.repairagencyServlet.model.service;
 
 
-import com.example.repairagencyServlet.controller.dto.PriceDto;
 import com.example.repairagencyServlet.exception.NotEnoughMoneyException;
 import com.example.repairagencyServlet.exception.OrderNotFoundException;
 import com.example.repairagencyServlet.model.entity.Order;
@@ -15,11 +14,11 @@ public interface OrderService {
     List<Order> findAllCurrentCustomerOrders(Long id);
     List<Order> findAllOrders();
     Order findOrderById(Long id) throws OrderNotFoundException;
-    Order setPrice(PriceDto price, Long id);
-    Order payForOrder(Long id) throws NotEnoughMoneyException;
-    Order setMaster(Long masterId, Long id);
+    Order setPrice(Integer price, Long id) throws OrderNotFoundException;
+    Order payForOrder(Long id) throws NotEnoughMoneyException, OrderNotFoundException;
+    Order setMaster(Long masterId, Long id) throws OrderNotFoundException;
     List<Order> findAllCurrentMasterOrders(Long id);
-    Order takeInWork(Long id);
-    Order markAsDone(Long id);
+    Order takeInWork(Long id) throws OrderNotFoundException;
+    Order markAsDone(Long id) throws OrderNotFoundException;
 }
 

@@ -2,6 +2,7 @@ package com.example.repairagencyServlet.controller;
 
 
 import com.example.repairagencyServlet.controller.command.Command;
+import com.example.repairagencyServlet.controller.command.ExceptionCommand;
 import com.example.repairagencyServlet.controller.command.LogOutCommand;
 import com.example.repairagencyServlet.controller.command.LoginCommand;
 import com.example.repairagencyServlet.controller.command.admin.*;
@@ -41,7 +42,7 @@ public class Servlet extends HttpServlet {
         commands.put("/repairagencyServlet/login", new LoginCommand());
         commands.put("/repairagencyServlet/exception", new ExceptionCommand());
 
-        commands.put("/repairagencyServlet/admin", new AdminHomePage());
+        commands.put("/repairagencyServlet/admin", new AdminHomePageCommand());
         commands.put("/repairagencyServlet/admin/master_registration", new MasterRegistrationCommand());
         commands.put("/repairagencyServlet/admin/masters", new GetAllMastersCommand());
         commands.put("/repairagencyServlet/admin/reviews", new GetMasterReviewsCommand());

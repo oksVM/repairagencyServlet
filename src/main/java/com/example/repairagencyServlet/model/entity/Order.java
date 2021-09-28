@@ -1,9 +1,10 @@
 package com.example.repairagencyServlet.model.entity;
 
 
-import com.example.repairagencyServlet.model.dao.DaoFactory;
-
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.time.OffsetDateTime;
 
 
@@ -95,9 +96,60 @@ public class Order {
         this.offsetDateTime = offsetDateTime;
     }
 
-    @Override
-    public String toString() {
-        return orderStatus.toString();
+    public static class Builder {
+        private final Order order;
+
+        public Builder() {
+            this.order = new Order();
+        }
+
+        public Builder id(long id){
+            order.id = id;
+            return this;
+        }
+
+        public Builder orderName(String orderName){
+            order.orderName = orderName;
+            return this;
+        }
+
+        public Builder orderDescription(String orderDescription){
+            order.orderDescription = orderDescription;
+            return this;
+        }
+
+        public Builder orderArea(Area area){
+            order.area = area;
+            return this;
+        }
+
+        public Builder orderCustomer(AppUser user){
+            order.customer = user;
+            return this;
+        }
+
+        public Builder orderMaster(AppUser user){
+            order.master = user;
+            return this;
+        }
+
+        public Builder orderDate(OffsetDateTime offsetDateTime){
+            order.offsetDateTime = offsetDateTime;
+            return this;
+        }
+        public Builder orderStatus(OrderStatus orderStatus){
+            order.orderStatus = orderStatus;
+            return this;
+        }
+
+        public Builder orderPrice(Integer price){
+            order.price = price;
+            return this;
+        }
+
+        public Order build(){
+            return order;
+        }
     }
 }
 

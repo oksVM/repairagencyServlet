@@ -1,13 +1,12 @@
 package com.example.repairagencyServlet.controller.command;
 
-import com.example.repairagencyServlet.controller.config.PasswordConfig;
+import com.example.repairagencyServlet.exception.UserNotFoundException;
 import com.example.repairagencyServlet.model.entity.AppUser;
 import com.example.repairagencyServlet.model.service.AppUserService;
-import com.example.repairagencyServlet.model.service.AppUserServiceImpl;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.example.repairagencyServlet.model.service.impl.AppUserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
-
+//TODO
 public class LoginCommand implements Command{
     private AppUserService userService = new AppUserServiceImpl();
 
@@ -23,19 +22,17 @@ public class LoginCommand implements Command{
         String username = request.getParameter("username");
 
         if(CommandUtility.checkUserIsLogged(request, username)){
-            return "/noAccess.jsp";
+            return "/WEB-INF/noAccess.jsp";
         }
 
-        PasswordConfig passwordConfig = new PasswordConfig();
-        String password = passwordConfig.passwordEncoder().encode(request.getParameter("password"));
         AppUser user;
         try {
-            user = userService.loadUserByEmail(username);
-            if (user==null) {
-                throw new UsernameNotFoundException("user not found");
+                user = userService.loadUserByEmail(username, request.getParameter("password"));
+            if (user==null){
+                throw new UserNotFoundException();
             }
         }
-        catch (UsernameNotFoundException ex){
+        catch (UserNotFoundException ex){
             return("redirect:/repairagencyServlet/login?error=true");
         }
 

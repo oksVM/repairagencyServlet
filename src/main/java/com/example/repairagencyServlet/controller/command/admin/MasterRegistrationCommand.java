@@ -1,17 +1,24 @@
 package com.example.repairagencyServlet.controller.command.admin;
 
 import com.example.repairagencyServlet.controller.command.Command;
+import com.example.repairagencyServlet.controller.command.CommandUtility;
 import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationException;
 import com.example.repairagencyServlet.model.entity.AppUser;
+import com.example.repairagencyServlet.model.entity.Role;
 import com.example.repairagencyServlet.model.service.AppUserService;
-import com.example.repairagencyServlet.model.service.AppUserServiceImpl;
+import com.example.repairagencyServlet.model.service.impl.AppUserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class MasterRegistrationCommand implements Command {
     @Override
+
     public String execute(HttpServletRequest req) {
-        AppUserService appUserService = new AppUserServiceImpl();
+        AppUserService userService = new AppUserServiceImpl();
 
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
@@ -26,35 +33,43 @@ public class MasterRegistrationCommand implements Command {
             return "/WEB-INF/admin/masterregistration.jsp";
         }
 
-        boolean haveErrors = false;
+        AppUser user = new AppUser.Builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(password)
+                .role(Role.CUSTOMER).build();
 
-        if(!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")){
-            req.setAttribute("emailIncorrect",true);
-            haveErrors = true;
-        }
-
-        if(!password.matches("^.{8,16}$")){
-            req.setAttribute("passwordIncorrect",true);
-            haveErrors = true;
-        }
-
-        if(haveErrors){
+        if (validate(user, req)) {
             req.setAttribute("firstName",firstName);
             req.setAttribute("lastName",lastName);
             req.setAttribute("email",email);
             return "/WEB-INF/admin/masterregistration.jsp";
         }
-        AppUser appUser = new AppUser();
-        appUser.setFirstName(firstName);
-        appUser.setLastName(lastName);
-        appUser.setEmail(email);
-        appUser.setPassword(password);
+
         try {
-            appUserService.saveNewMaster(appUser);
-        }catch (RuntimeException | UserAlreadyExistAuthenticationException e){
-            return "redirect:/repairagencyServlet/admin/master_registration?error=true";
+            userService.saveNewMaster(user);
         }
-        return "redirect:/repairagencyServlet/admin/master_registration";
+        catch (UserAlreadyExistAuthenticationException ex) {
+            return "redirect:/repairagencyServlet/admin/master_registration?error=true" ;
+        }
+        return "redirect:/repairagencyServlet/admin/master_registration?registered=true";
+    }
+
+    private boolean validate(AppUser user, HttpServletRequest req) {
+        Map<String, Boolean> fieldsValidity = new HashMap<>();
+
+        ResourceBundle bundle =
+                ResourceBundle.getBundle("properties/regexes", new Locale(CommandUtility.getCurrentUserLanguage(req)));
+
+        fieldsValidity.put("invalidEmail", !user.getEmail().matches(bundle.getString("email.regexp")));
+        fieldsValidity.put("invalidFirstName", !user.getFirstName().matches(bundle.getString("name.regexp")));
+        fieldsValidity.put("invalidLastName", !user.getLastName().matches(bundle.getString("name.regexp")));
+        fieldsValidity.put("invalidPassword", !user.getPassword().matches(bundle.getString("password.regexp")));
+
+        fieldsValidity.forEach(req::setAttribute);
+
+        return fieldsValidity.values().stream().anyMatch(val->val);
     }
 
 }

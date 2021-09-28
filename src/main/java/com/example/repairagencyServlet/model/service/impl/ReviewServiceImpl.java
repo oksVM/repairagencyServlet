@@ -1,11 +1,5 @@
-package com.example.repairagencyServlet.model.service;
+package com.example.repairagencyServlet.model.service.impl;
 
-
-import com.example.repairagencyServlet.model.dao.DaoFactory;
-import com.example.repairagencyServlet.model.entity.Order;
-import com.example.repairagencyServlet.model.entity.Review;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 /*
 @Service

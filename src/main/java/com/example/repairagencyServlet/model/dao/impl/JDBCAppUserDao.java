@@ -4,7 +4,7 @@ import com.example.repairagencyServlet.controller.config.PasswordConfig;
 import com.example.repairagencyServlet.exception.UserAlreadyExistAuthenticationException;
 import com.example.repairagencyServlet.model.dao.AppUserDao;
 import com.example.repairagencyServlet.model.entity.AppUser;
-import com.example.repairagencyServlet.model.entity.Role;
+import com.example.repairagencyServlet.model.mapper.AppUserMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,8 +32,7 @@ public class JDBCAppUserDao implements AppUserDao {
                 preparedStatement.setString(1, appUser.getEmail());
                 preparedStatement.setString(2, appUser.getFirstName());
                 preparedStatement.setString(3, appUser.getLastName());
-                PasswordConfig passwordConfig = new PasswordConfig();
-                preparedStatement.setString(4, passwordConfig.passwordEncoder().encode(appUser.getPassword()));
+                preparedStatement.setString(4, PasswordConfig.passwordEncoder().encode(appUser.getPassword()));
                 preparedStatement.setString(5, "CUSTOMER");
                 System.out.println(preparedStatement);
                 result = preparedStatement.executeUpdate();
@@ -45,17 +44,15 @@ public class JDBCAppUserDao implements AppUserDao {
 
     @Override
     public List<AppUser> findAllMasters() {
-        String SELECT_ALL_MASTERS="select app_user_id, first_name, last_name from app_user where role='MASTER'";
+        String SELECT_ALL_MASTERS="select * from app_user where role='MASTER'";
         List<AppUser> result = new ArrayList<>();
 
         try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_MASTERS)) {
             ResultSet rs = preparedStatement.executeQuery();
+            AppUserMapper appUserMapper = new AppUserMapper();
             while (rs.next()){
-                AppUser user = new AppUser();
-                user.setId(rs.getLong("app_user_id"));
-                user.setFirstName(rs.getString("first_name"));
-                user.setLastName(rs.getString("last_name"));
-                result.add(user);
+                AppUser appUser = appUserMapper.extractFromResultSet(rs);
+                result.add(appUser);
             }
         } catch (SQLException e){
 
@@ -64,19 +61,15 @@ public class JDBCAppUserDao implements AppUserDao {
     }
 
     @Override
-    public List<AppUser> findAllCustomers() {
-        String SELECT_ALL_CUSTOMERS="select app_user_id, first_name, last_name from app_user where role='CUSTOMER'";
+    public List<AppUser> findAllCustomers(){
+        String SELECT_ALL_CUSTOMERS="select * from app_user where role='CUSTOMER'";
         List<AppUser> result = new ArrayList<>();
-        System.out.println("-------");
         try(PreparedStatement preparedStatement=connection.prepareStatement(SELECT_ALL_CUSTOMERS)) {
             ResultSet rs = preparedStatement.executeQuery();
+            AppUserMapper appUserMapper = new AppUserMapper();
             while (rs.next()){
-                AppUser user = new AppUser();
-                System.out.println(rs.getLong("app_user_id"));
-                user.setId(rs.getLong("app_user_id"));
-                user.setFirstName(rs.getString("first_name"));
-                user.setLastName(rs.getString("last_name"));
-                result.add(user);
+                AppUser appUser = appUserMapper.extractFromResultSet(rs);
+                result.add(appUser);
             }
         } catch (SQLException e){
         }
@@ -85,14 +78,32 @@ public class JDBCAppUserDao implements AppUserDao {
 
     @Override
     public Optional<AppUser> findById(Long id) {
-        return Optional.empty();
+
+        try (PreparedStatement ps = connection.prepareStatement("select * from app_user where app_user_id = ?")) {
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            AppUser user = null;
+            AppUserMapper appUserMapper = new AppUserMapper();
+            if (rs.next()) {
+                user = appUserMapper.extractFromResultSet(rs);
+            }
+
+            if (user == null) {
+                return null;
+            }
+            return Optional.of(user);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
 
-    public int createMaster(AppUser appUser) {
+    public int createMaster(AppUser appUser) throws UserAlreadyExistAuthenticationException {
         String INSERT_APPUSER_SQL="INSERT INTO app_user (email, first_name, last_name, password, role) VALUES (?, ?, ?, ?,?)";
-        int result = 0;
+        int result;
 
         try(PreparedStatement preparedStatement=connection.prepareStatement(INSERT_APPUSER_SQL)) {
             preparedStatement.setString(1, appUser.getEmail());
@@ -101,16 +112,15 @@ public class JDBCAppUserDao implements AppUserDao {
             PasswordConfig passwordConfig = new PasswordConfig();
             preparedStatement.setString(4, passwordConfig.passwordEncoder().encode(appUser.getPassword()));
             preparedStatement.setString(5, "MASTER");
-            System.out.println(preparedStatement);
             result = preparedStatement.executeUpdate();
         } catch (SQLException e){
-
+            throw new UserAlreadyExistAuthenticationException();
         }
         return result;
     }
 
     @Override
-    public AppUser findByEmail(String email) {
+    public AppUser findByEmail(String email, String password) {
 
         try (PreparedStatement ps = connection.prepareStatement("select * from app_user where email = ?")) {
 
@@ -118,23 +128,16 @@ public class JDBCAppUserDao implements AppUserDao {
             ResultSet rs = ps.executeQuery();
 
             AppUser user = null;
+            AppUserMapper appUserMapper = new AppUserMapper();
             while (rs.next()) {
-                user = new AppUser();
-                user.setId(rs.getLong("app_user_id"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword("password");
-                user.setRole(Role.valueOf(rs.getString("role")));
+                user = appUserMapper.extractFromResultSet(rs);
             }
 
-            if (user == null) {
+            if (user == null || !user.getEmail().equals(email) || !PasswordConfig.passwordEncoder().matches(password, user.getPassword())) {
                 return null;
             }
-
-            if (user.getEmail().equals(email)) {
                 return user;
-            } else {
-                return null;
-            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

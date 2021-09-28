@@ -167,6 +167,10 @@ import java.util.Set;
              return this;
          }
 
+         public Builder amountOfMoney(Integer amountOfMoney){
+             user.amountOfMoney = amountOfMoney;
+             return this;
+         }
          public AppUser build(){
              return user;
          }
